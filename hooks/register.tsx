@@ -30,7 +30,7 @@ import { shortenPath } from './format'
 import { kindOf, summarize, toolLabel } from './tools'
 import { commandOf, errorLine, isQuiet, quietLabel } from './quiet'
 import { MAX_MARKDOWN, replySegments } from './reply'
-import { isDue, isNewer, LATEST_URL, updateNotice, versionOf } from './updates'
+import { isDue, isNewer, LATEST_URL, UPDATE_CHECK, updateNotice, versionOf } from './updates'
 import { hyperlinksFrom, touchOf } from './links'
 import type { Checked } from './updates'
 
@@ -471,6 +471,10 @@ async function tickCountdowns($: EngineInterface): Promise<void> {
 }
 
 async function checkForUpdate($: EngineInterface): Promise<void> {
+  if (!UPDATE_CHECK) {
+    return
+  }
+
   const now = await $.clock.now()
 
   if (!isDue(await $.store.get('updateCheck'), now)) {

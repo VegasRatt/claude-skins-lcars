@@ -14,7 +14,7 @@ import { escape, FONT, MONO } from '../hooks/svg-kit'
 import { tableSvg } from '../hooks/svg-table'
 import { terminalSvg } from '../hooks/svg-terminal'
 import { usageSvg } from '../hooks/svg-usage'
-import noir from '../hooks/themes/noir'
+import { SKINS } from '../hooks/themes'
 
 const OUT = join(import.meta.dirname, '..', 'docs', 'previews')
 const WIDTH = 760
@@ -111,11 +111,18 @@ function write(name: string, source: string | Built): void {
   writeFileSync(join(OUT, `${name}.svg`), typeof source === 'string' ? source : source.source)
 }
 
+// The previews show the first skin in the list: the default.
+const [skin] = SKINS
+
+if (skin === undefined) {
+  throw new Error('no skins')
+}
+
 mkdirSync(OUT, { recursive: true })
 
 for (const [theme, palette] of [
-  ['dark', noir.palette],
-  ['light', noir.light ?? toLight(noir.palette)],
+  ['dark', skin.palette],
+  ['light', skin.light ?? toLight(skin.palette)],
 ] as const) {
   write(`hero-${theme}`, hero(palette))
   write(`spinners-${theme}`, spinners(palette))

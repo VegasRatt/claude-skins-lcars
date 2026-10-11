@@ -174,7 +174,7 @@ test('the design tool saves, applies, changes settings and deletes', async () =>
   expect(gone.state.prefs.skin).toBe(DEFAULT_PREFS.skin)
   expect(runDesign({ action: 'delete', name: 'nord' }, start).isError).toBe(true)
   expect(runDesign({ action: 'apply', name: 'nope' }, start).isError).toBe(true)
-  expect(JSON.parse(runDesign({ action: 'show' }, start).text).current).toBe('noir')
+  expect(JSON.parse(runDesign({ action: 'show' }, start).text).current).toBe('lcars')
 })
 
 test('/skin names a skin, switches parts, and refuses what it does not know', async () => {
@@ -364,7 +364,7 @@ test('every built-in skin names itself once and fills every slot with a colour, 
   const hex = /^#[0-9a-f]{6}$/
   const slots = Object.keys(tokyoNight.palette)
 
-  expect(SKINS.length).toBe(15)
+  expect(SKINS.length).toBe(16)
   expect(new Set(SKINS.map(skin => skin.name)).size).toBe(SKINS.length)
 
   for (const skin of SKINS) {

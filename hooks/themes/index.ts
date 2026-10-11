@@ -5,6 +5,7 @@ import everforest from './everforest'
 import github from './github'
 import gruvbox from './gruvbox'
 import kanagawa from './kanagawa'
+import lcars from './lcars'
 import mono from './mono'
 import nightOwl from './night-owl'
 import noir from './noir'
@@ -17,6 +18,7 @@ import type { Skin } from '../skin'
 
 // A new built-in skin is one file beside these and one line here. The first is the default.
 export const SKINS: readonly Skin[] = [
+  lcars,
   noir,
   tokyoNight,
   dracula,

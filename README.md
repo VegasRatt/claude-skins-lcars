@@ -1,3 +1,27 @@
+# CmdNOC LCARS skins (fork)
+
+A fork of [hellosverre/claude-skins](https://github.com/hellosverre/claude-skins) 0.5.3 (MIT) that adds the
+`lcars` skin — the Command NOC Portal palette (`hooks/themes/lcars.ts`) — and makes it the default.
+The daily update check is switched off (`UPDATE_CHECK` in `hooks/updates.ts`). Everything else is upstream;
+the upstream README follows.
+
+Install from GitHub, typed at a Claude Code prompt:
+
+```
+/plugin install skins --marketplace VegasRatt/claude-skins-lcars
+```
+
+Or from a local clone: `claude plugin marketplace add <clone folder>` then `claude plugin install skins@cmdnoc-mods`.
+Then type `/skin` to see it; `/skin gallery` shows every element it draws.
+
+Sync with upstream: `git fetch upstream && git merge upstream/main` (remote `upstream` =
+https://github.com/hellosverre/claude-skins). The fork's own changes are small and in the merge path: `hooks/themes/lcars.ts`,
+the `SKINS` order in `themes/index.ts`, `DEFAULT_PREFS.skin` in `command.ts`, `UPDATE_CHECK` in `updates.ts` + `register.tsx`,
+`scripts/previews.ts` rendering the default skin, the noir pins in `tests/`, and `tests/lcars.test.ts`.
+After a merge: `claude plugin validate .` and `claude plugin test .`.
+
+---
+
 <h1 align="center">
   <picture>
     <source media="(prefers-color-scheme: light)" srcset="docs/brand/banner-light.svg">

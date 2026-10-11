@@ -3,7 +3,8 @@ import { expect, mock, test } from 'claude-code/testing'
 import type { Engine, Plugin } from 'claude-code/testing'
 
 import { widthOf } from '../hooks/markdown'
-import noir from '../hooks/themes/noir'
+// Fork: a mount with no session draws with the code default, lcars in this fork.
+import lcars from '../hooks/themes/lcars'
 
 const SURFACES = ['terminal', 'desktop'] as const
 
@@ -74,7 +75,8 @@ function stubEngine(on: On, own: { env?: boolean; store?: boolean; toast?: boole
     on('env.get', () => ({ value: undefined }))
   }
   if (!own.store) {
-    on('store.get', () => ({ value: undefined }))
+    // Fork: these tests were written against noir, upstream's default; lcars is this fork's.
+    on('store.get', ($, e) => ({ value: e.key === 'prefs' ? { skin: 'noir' } : undefined }))
     on('store.set', () => ({ value: undefined }))
   }
   if (!own.toast) {
@@ -315,7 +317,7 @@ test('the markdown pack draws alerts and task lists everywhere, headings and par
 
   const terminal = await $.ui.mount(reply('terminal'))
   expect(await terminal.find({ type: 'Text', text: '▍ Plan' })).toBeDefined()
-  expect(spanColor((await terminal.find({ type: 'Text', text: /Ran 54 tests/ })) as Found, '3.2s')).toBe('#f5f5f5')
+  expect(spanColor((await terminal.find({ type: 'Text', text: /Ran 54 tests/ })) as Found, '3.2s')).toBe(lcars.palette.user)
   expect(await terminal.find({ type: 'Text', text: '▲ Warning' })).toBeDefined()
   expect(JSON.stringify(await terminal.find({ type: 'Box' }))).toContain('"borderStyle":"round"')
   expect(await terminal.find({ type: 'Text', text: '☑ ' })).toBeDefined()
@@ -622,7 +624,7 @@ test('a code fence is a card on the desktop, highlighted rows in the terminal, m
 
   const terminal = await $.ui.mount(reply('terminal'))
   expect(await terminal.find({ type: 'Svg' })).toBeUndefined()
-  expect(spanColor((await terminal.find({ type: 'Text', text: 'const a = 1' })) as Found, 'const')).toBe(noir.palette.web)
+  expect(spanColor((await terminal.find({ type: 'Text', text: 'const a = 1' })) as Found, 'const')).toBe(lcars.palette.web)
   await terminal.unmount()
 
   await runSkin($, 'highlight off')
@@ -1127,7 +1129,8 @@ test('/skin copy copies the last reply and says so, or says there is nothing yet
 const unawaited = () =>
   new Promise<void>(resolve => (globalThis as unknown as { setTimeout: (run: () => void, ms: number) => void }).setTimeout(resolve, 0))
 
-test('a session start says when a newer release is out, at most once a day', async ($, on) => {
+// Fork: the daily update check is off (UPDATE_CHECK in hooks/updates.ts), so a session start fetches nothing and says nothing.
+test('the fork makes no update check: a session start fetches nothing and shows no update toast', async ($, on) => {
   const store: Record<string, unknown> = {}
   const toasts: string[] = []
   let latest = '0.1.3'
@@ -1155,13 +1158,9 @@ test('a session start says when a newer release is out, at most once a day', asy
 
   await $.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' })
   await unawaited()
-  expect(toasts.filter(text => text.startsWith('skins 0.1.3 is out'))).toHaveLength(1)
-
-  latest = '0.1.4'
-  await $.session.start({ surface: 'terminal', isInteractive: true, cwd: '/work' })
-  await unawaited()
-  expect(fetches).toBe(1)
-  expect(toasts.some(text => text.includes('0.1.4'))).toBe(false)
+  expect(fetches).toBe(0)
+  expect(toasts.filter(text => text.startsWith(`skins ${latest} is out`))).toHaveLength(0)
+  expect(store.updateCheck).toBe(undefined)
 })
 
 test('a card settles by itself once its entrance ends, so a repaint of the stored drawing cannot replay it', async ($, on) => {
@@ -1870,7 +1869,7 @@ test('the terminal draws shell output as a card: the command and a tick, nothing
 test('a failed shell call shows its exit code, and stderr under its own label in the error colour', async ($, on) => {
   stubEngine(on)
   const [id = '', other = ''] = await ranShells($, on, ['pnpm tsc', 'pnpm lint'])
-  const palette = noir.palette
+  const palette = lcars.palette
 
   await closeRow($, id)
   await closeRow($, other)

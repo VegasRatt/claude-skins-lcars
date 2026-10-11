@@ -16,7 +16,8 @@ function stub(on: On, env: Record<string, string> = {}, copied: string[] = []) {
   mock.clock(on, { now: 10_000 })
   on('session.cwd', () => ({ value: '/work' }))
   on('env.get', ($, e) => ({ value: env[e.name] }))
-  on('store.get', () => ({ value: undefined }))
+  // Fork: these tests were written against noir, upstream's default; lcars is this fork's.
+  on('store.get', ($, e) => ({ value: e.key === 'prefs' ? { skin: 'noir' } : undefined }))
   on('store.set', () => ({ value: undefined }))
   on('ui.toast', () => ({ value: undefined }))
   on('ui.log', () => ({ value: undefined }))

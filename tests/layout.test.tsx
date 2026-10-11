@@ -5,7 +5,8 @@ import type { Engine } from 'claude-code/testing'
 import { fenceDiff, newOnly } from '../hooks/diff-fence'
 import { DEFAULT_PREFS } from '../hooks/command'
 import { replySegments } from '../hooks/reply'
-import noir from '../hooks/themes/noir'
+// Fork: a mount with no session draws with the code default, lcars in this fork.
+import lcars from '../hooks/themes/lcars'
 
 // Diff fences, blocks side by side, and `$.skins.markdown` for other mods.
 
@@ -15,7 +16,8 @@ function stub(on: On, copied: string[] = []) {
   mock.clock(on, { now: 10_000 })
   on('session.cwd', () => ({ value: '/work' }))
   on('env.get', () => ({ value: undefined }))
-  on('store.get', () => ({ value: undefined }))
+  // Fork: these tests were written against noir, upstream's default; lcars is this fork's.
+  on('store.get', ($, e) => ({ value: e.key === 'prefs' ? { skin: 'noir' } : undefined }))
   on('store.set', () => ({ value: undefined }))
   on('ui.toast', () => ({ value: undefined }))
   on('ui.log', () => ({ value: undefined }))
@@ -57,7 +59,7 @@ test('a diff fence on the terminal is numbered rows in the skin’s colours, wit
   const ui = await $.ui.mount(reply(DIFF))
   const added = (await ui.find({ type: 'Text', text: /11 \+ {3}return n <= 10/ })) as Node | undefined
   expect(added).toBeDefined()
-  expect(JSON.stringify(added)).toContain(noir.palette.ok)
+  expect(JSON.stringify(added)).toContain(lcars.palette.ok)
   expect(await ui.find({ type: 'Text', text: /11 {4}- {3}return n < 10/ })).toBeDefined()
   expect(await ui.find({ type: 'Text', text: /src\/limit\.ts/ })).toBeDefined()
 

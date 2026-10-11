@@ -1,9 +1,20 @@
 {
   "name": "skins",
   "version": "0.5.3",
-  "description": "Skins for Claude Code: tool rows that open onto their input and answer, highlighted code, diff, table, math, Mermaid and shell cards, links, folding, a usage band, a calm mode and fifteen themes. /skin swaps them live.",
-  "author": { "name": "hellosverre", "url": "https://github.com/hellosverre" },
+  "description": "CmdNOC LCARS skin for Claude Code (fork of hellosverre/claude-skins 0.5.3): tool rows with icons, diff, table, code, Mermaid and shell cards, a usage band \u2014 in the Command NOC Portal's LCARS palette. /skin swaps skins live.",
+  "author": {
+    "name": "hellosverre",
+    "url": "https://github.com/hellosverre"
+  },
   "license": "MIT",
-  "keywords": ["claude-code-mods", "claude-mods", "function-hooks", "theme", "skin"],
+  "keywords": [
+    "claude-code-mods",
+    "claude-mods",
+    "function-hooks",
+    "theme",
+    "skin",
+    "lcars",
+    "cmdnoc"
+  ],
   "types": "./types/index.d.ts"
 }
