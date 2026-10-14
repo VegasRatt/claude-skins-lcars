@@ -5,6 +5,7 @@ import { resolveSkin } from '../hooks/custom'
 import { toLight } from '../hooks/light'
 import { SKINS } from '../hooks/themes'
 import lcars from '../hooks/themes/lcars'
+import lcarsClassic from '../hooks/themes/lcars-classic'
 
 // The fork's one promise: LCARS is a built-in skin, it is the default, and every colour in
 // it is a real six-digit hex the portal paints with.
@@ -68,4 +69,22 @@ test('the spinner and footer words fit the designer limits', async () => {
     expect(word.length <= 24, word).toBe(true)
   }
   expect(lcars.spinner.length <= 12 && lcars.done.length <= 12).toBe(true)
+})
+
+test('lcars-classic is the second skin, every slot a hex, tan text readable on its bands', async () => {
+  expect(SKINS[1]?.name).toBe('lcars-classic')
+  expect(resolveSkin('lcars-classic', {})).toBe(lcarsClassic)
+  for (const [slot, value] of Object.entries(lcarsClassic.palette)) {
+    expect(HEX.test(value), `${slot} = ${value}`).toBe(true)
+  }
+  const { fg, muted, surface, zebra, read, write, run, user } = lcarsClassic.palette
+
+  expect(contrast(fg, surface) >= 4.5).toBe(true)
+  expect(contrast(muted, zebra) >= 4.5).toBe(true)
+  expect(contrast(read, write) > 1.2).toBe(true)
+  expect(contrast(write, run) > 1.2).toBe(true)
+  expect(user).toBe(write)
+  for (const word of [...lcarsClassic.spinner, ...lcarsClassic.done]) {
+    expect(word.length <= 24, word).toBe(true)
+  }
 })
